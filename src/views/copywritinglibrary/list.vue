@@ -38,7 +38,7 @@
 						width="200"
 						label="创建时间">
 					<template slot-scope="scope">
-						<i class="iconfont" style="color: yellow">&#xe6d5;</i>2018-22-22
+						<i class="iconfont" style="color: yellow;cursor: pointer">&#xe6d5;</i>2018-22-22
 					</template>
 				</el-table-column>
 				<el-table-column
@@ -81,7 +81,7 @@
 			return {
                 search:'',
                 status:true,
-                textarea:[],
+                textarea:'',
                 tableData3: [{
                     date: '2016-05-03',
                     name: '王小虎',

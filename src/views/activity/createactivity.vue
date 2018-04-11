@@ -279,7 +279,8 @@
 
 			</el-col>
 		</el-col>
-		<el-col :span="24" style="text-align: center;margin-top: 50px">
+		<el-col :span="24" style="margin-top: 30px;margin-bottom: 50px;text-align: center">
+			<el-button>取消</el-button>
 			<el-button type="primary">提交</el-button>
 		</el-col>
 	</el-row>

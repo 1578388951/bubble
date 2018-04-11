@@ -1,6 +1,6 @@
 <template>
 	<el-row class="createshare">
-		<el-col :span="24">
+		<el-col :span="24" id="nameAnchor">
 			<el-col :span="24">
 				<strong>分享名称</strong>
 			</el-col>
@@ -8,7 +8,7 @@
 				<el-input v-model="sharename"></el-input>
 			</el-col>
 		</el-col>
-		<el-col :span="24">
+		<el-col :span="24"  id="routeAnchor">
 			<el-col :span="24">
 				<strong>分享路径</strong>
 				<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
@@ -19,7 +19,7 @@
 				</el-checkbox-group>
 			</el-col>
 		</el-col>
-		<el-col :span="24">
+		<el-col :span="24" id="marketAnchor">
 			<el-col :span="24"><strong>应用市场</strong> <el-button type="text" @click='marketSelect'>全选</el-button></el-col>
 			<el-col :span="24">
 				<el-col :span="2" style="min-width: 120px">
@@ -45,7 +45,7 @@
 			</el-col>
 		</el-col>
 		<!--文案-->
-		<el-col :span="24">
+		<el-col :span="24" id="contentAnchor">
 			<el-col :span="24" style="margin-top: 20px;">
 				<strong>文案</strong>
 			</el-col>
@@ -55,10 +55,10 @@
 						<strong>文案名称</strong>
 					</el-col>
 					<el-col :span="24">
-						<el-input v-model="sharename"></el-input>
+						<el-input v-model="contentname"></el-input>
 					</el-col>
 					<el-col :span="24" style="margin-top: 10px;">
-						<el-input v-model="sharename" type="textarea"></el-input>
+						<el-input v-model="sharecontent" type="textarea" :rows="5"></el-input>
 					</el-col>
 				</el-col>
 				<el-col :span="12"  style="padding: 15px">
@@ -130,12 +130,89 @@
 						</el-col>
 					</el-col>
 				</el-checkbox-group>
+				<el-col :span="24">
+					<el-col :span="12" style="padding: 10px">
+						<el-col :span="24">图片名称</el-col>
+						<el-col :span="24">
+							<el-input v-model="fixedPicture" placeholder="请输入图片名称"></el-input>
+						</el-col>
+						<el-col :span="24" style="margin-top: 10px;">
+							<el-upload
+									class="avatar-uploader"
+									action="https://jsonplaceholder.typicode.com/posts/"
+									:show-file-list="false"
+									ref="upload"
+									:on-success="handleAvatarSuccess"
+									:before-upload="beforeAvatarUpload">
+								<template v-if="imageUrl" style="position: relative;">
+										<img :src="imageUrl" class="avatar">
+								</template>
+								<template v-else style="position: relative;">
+										<i class="el-icon-plus avatar-uploader-icon"></i>
+								</template>
+							</el-upload>
+						</el-col>
+					</el-col>
+					<el-col :span="12" style="padding: 10px">
+						<el-col :span="24">图片名称</el-col>
+						<el-col :span="24">
+							<el-input v-model="dynamicPicture" placeholder="请输入图片名称"></el-input>
+						</el-col>
+						<el-col :span="24" style="margin-top: 10px;">
+							<el-upload
+									class="avatar-uploader"
+									action="https://jsonplaceholder.typicode.com/posts/"
+									:show-file-list="false"
+									ref="upload"
+									:on-success="handleAvatarSuccess"
+									:before-upload="beforeAvatarUpload">
+								<template v-if="imageUrl" style="position: relative;">
+									<img :src="imageUrl" class="avatar">
+								</template>
+								<template v-else style="position: relative;">
+									<i class="el-icon-plus avatar-uploader-icon"></i>
+								</template>
+							</el-upload>
+						</el-col>
+					</el-col>
+				</el-col>
+
 			</el-col>
+		</el-col>
+		<el-col :span="24" id="versionAnchor">
+			<el-col :span="24"><strong>应用版本</strong> <el-button type="text" @click='versionSelect'>全选</el-button></el-col>
+			<el-col :span="24">
+				<el-col :span="2" style="min-width: 120px">
+					<el-checkbox :indeterminate="isIndeterminateVersionan" v-model="checkAllVersionan" @change="handleCheckAllChangeVersionan">全选</el-checkbox>
+					<strong>安卓</strong>
+				</el-col>
+				<el-col :span="13">
+					<el-checkbox-group v-model="checkedCitiesVersionan" @change="handleCheckedCitiesChangeVersionan">
+						<el-checkbox v-for="(city,index) in citiesVersionan" :label="city" :key="index">{{city}}</el-checkbox>
+					</el-checkbox-group>
+				</el-col>
+			</el-col>
+			<el-col :span="24" style="margin-top: 20px;">
+				<el-col :span="2" style="min-width: 120px">
+					<el-checkbox :indeterminate="isIndeterminateVersionios" v-model="checkAllVersionios" @change="handleCheckAllChangeVersionios">全选</el-checkbox>
+					<strong>iOS</strong>
+				</el-col>
+				<el-col :span="13">
+					<el-checkbox-group v-model="checkedCitiesVersionios" @change="handleCheckedCitiesChangeVersionios">
+						<el-checkbox v-for="city in citiesVersionios" :label="city" :key="city">{{city}}</el-checkbox>
+					</el-checkbox-group>
+				</el-col>
+			</el-col>
+		</el-col>
+		<el-col :span="24" style="margin-top: 30px;margin-bottom: 50px;text-align: center">
+			<el-button>取消</el-button>
+			<el-button type="primary" @click="sharesubmit">提交</el-button>
 		</el-col>
 	</el-row>
 </template>
 <script>
 	// import { getUserList } from '../../api/api';
+    import bus from '../../utils/eventBus';
     const cityOptions = ['朋友圈', '微信好友、QQ、短信'];
     const optionsversionan = ['上海', '北京', '广州', '深圳2', '深圳3', '深圳4', '深圳5'];
     const optionsversionios = ['上海1', '北京1', '广州1', '广州2', '广州3', '广州4', '广州5', '广州6', '广州7', '广州8', '广州9', '广州11', '广州12', '广州13', '广州14', '广州15', '广州16', '深圳'];
@@ -170,6 +247,7 @@
                 /*应用市场ios----end*/
                 shareImg:['固定图片'],
                 sharename:'',
+                sharecontent:'',
                 checkAll: false,
                 checkAll1: false,
                 checkAll2: false,
@@ -179,7 +257,11 @@
                 cities: cityOptions,
                 isIndeterminate: true,
                 isIndeterminate1: true,
-                isIndeterminate2: true
+                isIndeterminate2: true,
+                fixedPicture:'',
+                dynamicPicture:'',
+                imageUrl:'',
+                contentname:'',
 			}
 		},
 		methods: {
@@ -265,10 +347,58 @@
                 this.checkAll1 = checkedCount === this.cities.length;
                 this.isIndeterminate1 = checkedCount > 0 && checkedCount < this.cities.length;
             },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            //上传之前
+            beforeAvatarUpload(file) {
+                /* const isJPG = file.type === 'image/jpeg';
+                 const isLt2M = file.size / 1024 / 1024 < 2;
+
+                 if (!isJPG) {
+                     this.$message.error('上传头像图片只能是 JPG 格式!');
+                 }
+                 if (!isLt2M) {
+                     this.$message.error('上传头像图片大小不能超过 2MB!');
+                 }
+                 return isJPG && isLt2M;*/
+            },
+			message(mess){
+                this.$message({
+                    message: mess,
+                    type: 'warning'
+                });
+			},
+            sharesubmit(){
+                if(this.sharename.replace(/(^s*)|(s*$)/g, "").length ==0){
+                    this.goAnchor('#nameAnchor')
+                    this.message('分享名称不能为空')
+				}else if(this.checkedCities.length==0){
+                    this.goAnchor('#routeAnchor')
+                    this.message('分享路径必选')
+				}else if(this.checkedCitiesMarketan.length==0 || this.checkedCitiesMarketios.length==0){
+                    this.goAnchor('#marketAnchor')
+                    this.message('应用市场必选')
+                }else if(this.contentname.replace(/(^s*)|(s*$)/g, "").length ==0 || this.sharecontent.replace(/(^s*)|(s*$)/g, "").length ==0 || this.list.length==0){
+                    this.goAnchor('#contentAnchor')
+                    this.message('文案必填')
+                }else if(this.checkedCitiesVersionan.length ==0 || this.checkedCitiesVersionios.length==0){
+                    this.goAnchor('#versionAnchor')
+                    this.message('应用版本必选')
+                }
+
+			},
+            goAnchor(selector) {
+                let anchor = this.$el.querySelector(selector)
+                bus.$emit('userDefinedEvent', anchor.offsetTop);
+            }
 
 		},
 		mounted() {
             this.marketSelect()
+		},
+        beforeDestroy(){
+            bus.$off('userDefinedEvent');
 		}
 	};
 
@@ -276,6 +406,34 @@
 
 <style lang="scss">
 	.createshare{
+		.avatar-uploader{
+			height: 350px;
+			background: #eeeeee;
+			overflow: hidden;
+		}
+		.avatar-uploader .el-upload {
+			border: 1px solid #ccc;
+			border-radius: 6px;
+			cursor: pointer;
+			position: relative;
+			overflow: hidden;
+		}
+		.avatar-uploader .el-upload:hover {
+			border-color: #409EFF;
+		}
+		.avatar-uploader-icon {
+			font-size: 20px;
+			color: #8c939d;
+			width: 178px;
+			height: 178px;
+			line-height:178px;
+			text-align: center;
+		}
+		.avatar {
+			width: 178px;
+			height: 178px;
+			display: block;
+		}
 		.sharerow{
 			overflow : hidden; display: -webkit-box;
 			white-space:nowrap; text-overflow:ellipsis;
@@ -298,6 +456,9 @@
 		}
 		.rowscroll{
 			height: 200px;overflow-y: auto
+		}
+		.el-textarea__inner{
+			border: 1px solid #000;
 		}
 
 

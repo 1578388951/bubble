@@ -46,6 +46,7 @@
 </template>
 
 <script>
+    import bus from '../utils/eventBus';
 	export default {
 		data() {
 			return {
@@ -92,6 +93,13 @@
 				this.sysUserName = user.name || '';
 				this.sysUserAvatar = user.avatar || '';
 			}
+            var self = this;
+            bus.$on('userDefinedEvent',function(top){
+                let anchor = self.$el.querySelector('.content-container')
+                anchor.scrollTop = top;
+
+
+            });
 
 		}
 	}
